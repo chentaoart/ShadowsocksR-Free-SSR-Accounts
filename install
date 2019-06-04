@@ -1,0 +1,156 @@
+VPS安装ShadowSocks
+推荐看秋水逸冰的《Shadowsocks 一键安装脚本（四合一）》的安装教程。
+
+运行以下命令:
+
+wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh
+chmod +x shadowsocks-all.sh
+./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
+选择脚本（Python、R、Go、libev），任选一个：
+
+Which Shadowsocks server you'd select:
+1.Shadowsocks-Python
+2.ShadowsocksR
+3.Shadowsocks-Go
+4.Shadowsocks-libev
+Please enter a number (default 1):
+笔者选择Shadowsocks-Go，输入3......然后，输入密码和端口，笔者直接回车用默认：
+
+You choose = Shadowsocks-Go
+
+Please enter password for Shadowsocks-Go
+(default password: teddysun.com):
+
+password = teddysun.com
+
+Please enter a port for Shadowsocks-Go [1-65535]
+(default port: 8989):
+
+port = 8989
+
+
+Press any key to start...or Press Ctrl+C to cancel
+安装成功后，命令行出现：
+
+Congratulations, Shadowsocks-Go server install completed!
+Your Server IP        :  45.32.73.59
+Your Server Port      :  8989
+Your Password         :  teddysun.com
+Your Encryption Method:  aes-256-cfb
+
+Welcome to visit: https://teddysun.com/486.html
+Enjoy it!
+（如果安装失败，请尝试其他脚本）
+
+Shadowsocks客户端
+Shadowsocks官网 windows客户端下载：https://github.com/shadowsocks/shadowsocks-windows/releases
+笔者使用的3.4.3版本，下载好Shadowsocks-3.4.3.zip，解压，里面只有一个Shadowsocks.exe。打开，输入服务器ip、端口、密码：
+
+Shadowsocks windows客户端
+
+把刚才安装Shadowsocks脚本成功后，输出的信息填上去：
+
+服务器地址，vps的ip地址，Your Server IP
+服务器端口，vps shadowsocks端口，Your Server Port ，默认8989
+密码，Your Password，默认 teddysun.com
+加密，Your Encryption Method，默认aes-256-cfb
+代理端口，这是代理本机的端口，建议默认 1080
+.
+
+mac用Shadowsocks-X NG客户端 https://github.com/shadowsocks/ShadowsocksX-NG/releases
+Chrome插件——SwitchyOmega
+去chrome商场安装 SwitchyOmega插件。
+配置代理
+1.proxy模式（如图）：
+
+代理协议：socks5
+代理服务器：127.0.0.1 // 本地ip
+代理端口：1080 // Shadowsocks客户端配置的代理端口
+SwitchyOmega - Proxy模式
+
+按左边的“应用选项”让配置生效。
+
+2.auto switch模式
+
+把需要代理的域名或网址，输入到条件中，情景模式选proxy（刚才配置的）；
+默认情景模式，建议"直接连接"，意思是不配置条件的网址默认不代理。
+SwitchyOmega - AutoSwitch模式
+
+在插件栏点击SwitchOmega，选"auto switch"
+
+选择情景模式
+
+浏览 google.com
+如果google能正常访问，证明你搭建Shadowsocks成功了！
+
+google.com
+
+Android客户端
+下载ShowdockSocks Android : https://github.com/shadowsocks/shadowsocks-android/releases
+1.点击“手动设置”
+
+手动配置
+
+2.填写服务器信息
+
+输入配置
+
+路由选择“绕过局域网与中国大陆网址”。
+
+3.连接
+
+连接代理服务器
+
+点击“检测网络连接”，等几秒出现“连接有效”证明连接成功：
+
+检验网络
+
+进阶（干货）
+TCP BBR 拥塞控制算法
+TCP BBR 是 Google 开源的 拥塞控制算法，类似锐速的单边加速工具。由于受到各方面限制，国外的vps速度不理想，偶尔有延迟、不稳定的现象出现。而bbr的作用，就是要解决这一问题。
+
+我们只需要在vps上安装即可，参考《一键安装最新内核并开启 BBR 脚本》。
+
+使用root用户登录，运行以下命令：
+
+wget --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh
+chmod +x bbr.sh
+./bbr.sh
+安装完成后，脚本会提示需要重启 VPS，输入 y 并回车后重启。重启后，执行命令：
+
+lsmod | grep bbr
+返回值有 tcp_bbr 模块即说明bbr已启动。
+
+（TCP BBR要求Linux内核4.10以上，如果安装提示内核版本太低，去《一键安装最新内核并开启 BBR 脚本》查看升级内核方法）
+
+BBR成功安装后，shadowsocks速度有明显提升，尽管不是每个网络都能看youtube1080P视频（笔者公司无压力，在家就不行），但浏览普通外国网站很畅通。
+
+FinalSpeed
+FinalSpeed是TCPSpeed前身，TCPSpeed是双边加速工具，比上文提到单边加速更稳定，vps要安装，客户端也要安装（有点麻烦）。TCPSpeed要付费的，不过有国人的地方就有破解版。其实TCPSpeed 159RMB终身使用（1个付费TCPSpeed仅运行在1个VPS），还是可以接受的。
+
+因为国内的线路复杂，笔者家里的电信看youtube就不怎么给力了（公司测试youtube速度扛扛的），FinalSpeed彻底解决了这个问题。
+
+由于内容比较多，这里不详细介绍了。有兴趣的同学参考《FinalSpeed:FinalSpeed安装 FinalSpeed破解版 FinalSpeed一键安装包 锐速替代品 FinalSpeed教程 双边加速FinalSpeed客户端下载及教程,Openvz福音【持续更新中，喜欢请收藏】》
+
+Snapshot
+Snapshot是Vultr提供的VPS快照功能，简单地说就是保存VPS状态，有需要的时候恢复。这个功能相当实用，例如安装了shadowsocks、bbr等，snapshot；然后添加多一个vps，同样要shadowsocks+bbr，这时恢复snapshot，就不用再手动安装、配置了。
+
+进去某个server，Snapshots界面，填写Label（一个备注而已），点"Take Snapshot"：
+
+Take  Snapshot
+
+Take  Snapshot Successful
+
+刚添加Snapshots，Status时Pending，等5~10分钟，状态就变成Available，快照保存成功。（期间请不要修改VPS）
+
+恢复Snapshot
+同样是某个Server里的Snapshot界面，点击最右边的"Restore Snapshot"按钮：
+
+Restore Snapshot
+
+等上5~10分钟，Server就完全恢复Snapshot保存时的样子了。
+
+小结
+笔者希望通过本文，让读者对vps有初步认识，并轻松搭建shadowsocks做代理服务器，体验国外的世界（笔者不会告诉你什么pornhub）。
+
+工信部已经明文规定，国内不允许有VPN之类的产品，所以以后想购买国内的VPN服务是不可能了，即使碰到有，说不定某天就被天朝封了。笔者认为天朝也不会赶尽杀绝，毕竟不上外国网站，对开发来说太痛苦，不利于科技发展。
